@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>나의 향 찾기 — 고려대학교 성년의 날 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --crimson: #8B0000;
+    --crimson-light: #A52020;
+    --crimson-pale: #F9EEEE;
+    --crimson-mid: #C0392B;
+    --gold: #C9A84C;
+    --gold-light: #F0D080;
+    --bg: #FDFAF7;
+    --text: #1a1a1a;
+    --text-muted: #6b6b6b;
+    --border: rgba(139,0,0,0.15);
+    --card-bg: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Header */
+  .header {
+    width: 100%;
+    background: var(--crimson);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .ku-logo {
+    width: 36px;
+    height: 36px;
+    background: var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--crimson);
+    flex-shrink: 0;
+  }
+  .header-text { color: white; }
+  .header-text .univ { font-size: 11px; opacity: 0.75; letter-spacing: 0.05em; }
+  .header-text .event { font-size: 14px; font-weight: 500; letter-spacing: 0.02em; }
+
+  /* Main container */
+  .container {
+    width: 100%;
+    max-width: 520px;
+    padding: 2rem 1.25rem 3rem;
+  }
+
+  /* Decorative top accent */
+  .accent-line {
+    width: 40px;
+    height: 3px;
+    background: var(--crimson);
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Intro */
+  .intro { text-align: center; padding: 2rem 0; }
+  .intro-rose { font-size: 56px; margin-bottom: 1.25rem; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  .intro-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--crimson);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+  }
+  .intro-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+  }
+  .intro-sub {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+  }
+  .start-btn {
+    background: var(--crimson);
+    color: white;
+    border: none;
+    padding: 15px 44px;
+    border-radius: 40px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 4px 20px rgba(139,0,0,0.25);
+  }
+  .start-btn:hover { background: var(--crimson-light); transform: translateY(-1px); }
+  .start-btn:active { transform: translateY(0); }
+
+  /* Progress */
+  .progress-wrap { margin-bottom: 2rem; }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .progress-step { font-size: 12px; color: var(--crimson); font-weight: 500; letter-spacing: 0.05em; }
+  .progress-count { font-size: 12px; color: var(--text-muted); }
+  .progress-bar {
+    height: 3px;
+    background: rgba(139,0,0,0.12);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--crimson);
+    border-radius: 2px;
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* Question */
+  .question-text {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    margin-bottom: 1.75rem;
+  }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.75rem; }
+  .option-btn {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 15px 18px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--text);
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+  }
+  .option-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid rgba(139,0,0,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--crimson);
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .option-btn:hover { border-color: var(--crimson); background: var(--crimson-pale); }
+  .option-btn:hover .option-num { background: var(--crimson); color: white; border-color: var(--crimson); }
+  .option-btn.selected { border-color: var(--crimson); background: var(--crimson-pale); }
+  .option-btn.selected .option-num { background: var(--crimson); color: white; border-color: var(--crimson); }
+
+  /* Nav */
+  .nav-row { display: flex; gap: 10px; }
+  .btn-back {
+    padding: 13px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-back:hover { border-color: var(--crimson); color: var(--crimson); }
+  .btn-next {
+    flex: 1;
+    padding: 13px;
+    border-radius: 10px;
+    border: none;
+    background: var(--crimson);
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-next:hover { background: var(--crimson-light); }
+  .btn-next:disabled { opacity: 0.3; cursor: default; }
+
+  /* Loading */
+  .loading-wrap { text-align: center; padding: 4rem 0; }
+  .spinner {
+    width: 36px; height: 36px;
+    border: 2.5px solid rgba(139,0,0,0.15);
+    border-top-color: var(--crimson);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 1.25rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 14px; color: var(--text-muted); }
+  .loading-sub { font-size: 12px; color: var(--border); margin-top: 0.4rem; }
+
+  /* Result */
+  .result-wrap { animation: fadeUp 0.5s ease; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+  .result-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--crimson);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  .result-name {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+  }
+  .result-family {
+    display: inline-block;
+    background: var(--crimson);
+    color: white;
+    font-size: 11px;
+    padding: 3px 12px;
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .result-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .result-desc {
+    font-size: 14px;
+    line-height: 1.85;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+  }
+  .notes-label { font-size: 11px; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 0.6rem; text-transform: uppercase; }
+  .notes-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 1.25rem; }
+  .note-tag {
+    background: var(--crimson-pale);
+    color: var(--crimson);
+    border: 1px solid rgba(139,0,0,0.15);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    letter-spacing: 0.03em;
+  }
+  .result-tip {
+    font-size: 13px;
+    color: var(--text-muted);
+    background: #FAFAFA;
+    border-left: 3px solid var(--gold);
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    line-height: 1.7;
+  }
+
+  .share-btn {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    border: none;
+    background: var(--crimson);
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background 0.15s;
+    box-shadow: 0 4px 16px rgba(139,0,0,0.2);
+  }
+  .share-btn:hover { background: var(--crimson-light); }
+  .restart-btn {
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .restart-btn:hover { border-color: var(--crimson); color: var(--crimson); }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .footer-logo { font-family: 'Noto Serif KR', serif; font-size: 13px; color: var(--crimson); font-weight: 600; }
+  .footer-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+  /* Share modal */
+  .modal-bg {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100;
+    padding: 1.5rem;
+  }
+  .modal {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+  }
+  .modal-title { font-family: 'Noto Serif KR', serif; font-size: 18px; margin-bottom: 0.5rem; }
+  .modal-sub { font-size: 13px; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem; }
+  .hashtag { font-size: 15px; color: var(--crimson); font-weight: 500; margin-bottom: 1.5rem; letter-spacing: 0.03em; }
+  .modal-close {
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--text-muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="ku-logo">고</div>
+  <div class="header-text">
+    <div class="univ">KOREA UNIVERSITY</div>
+    <div class="event">2026 성년의 날 🌹</div>
+  </div>
+</div>
+
+<div class="container">
+  <div id="app"></div>
+</div>
+
+<div id="modal" class="modal-bg" style="display:none;">
+  <div class="modal">
+    <div style="font-size:40px;margin-bottom:1rem;">📸</div>
+    <div class="modal-title">인스타에 공유하기</div>
+    <div class="modal-sub">결과 화면을 스크린샷 찍어서<br>아래 해시태그와 함께 올려주세요!</div>
+    <div class="hashtag">#고려대성년의날<br>#나의향찾기</div>
+    <button class="modal-close" onclick="closeModal()">닫기</button>
+  </div>
+</div>
+
+<script>
+// 각 질문의 선택지 → 향 계열 점수 매핑
+// 향 계열: 0=플로럴, 1=시트러스, 2=머스크, 3=우디, 4=스파이시, 5=아쿠아
+const questions = [
+  {
+    q: "지금 이 순간, 내 기분을 한 단어로 표현한다면?",
+    options: ["설레고 두근거려", "상쾌하고 활기차", "포근하고 안정적이야", "깊고 차분해"],
+    scores: [[0,2,0,0,0,0],[0,0,0,0,0,2],[0,0,2,0,0,0],[0,0,0,2,0,0]]
+  },
+  {
+    q: "이상적인 주말 오후를 고른다면?",
+    options: ["꽃집이나 플라워 카페", "바닷가나 야외 테라스", "포근한 집에서 홈카페", "숲속 트레킹"],
+    scores: [[2,0,0,0,0,0],[0,0,0,0,0,2],[0,0,2,0,0,0],[0,0,0,2,0,0]]
+  },
+  {
+    q: "나를 가장 잘 표현하는 색깔은?",
+    options: ["화이트 또는 연핑크", "레몬옐로우 또는 민트", "베이지 또는 크림", "다크그린 또는 브라운"],
+    scores: [[2,0,0,0,0,0],[0,2,0,0,0,0],[0,0,2,0,0,0],[0,0,0,2,0,0]]
+  },
+  {
+    q: "향기를 맡을 때 끌리는 느낌은?",
+    options: ["달콤하고 로맨틱한 꽃향기", "상큼하고 청량한 느낌", "비누처럼 포근한 느낌", "강렬하고 묵직한 느낌"],
+    scores: [[2,0,0,0,0,0],[0,2,0,0,0,0],[0,0,2,0,0,0],[0,0,0,0,2,0]]
+  },
+  {
+    q: "성년이 된 나에게 한마디 건넨다면?",
+    options: ["이제 더 자유롭게 빛나!", "세상을 시원하게 즐겨!", "있는 그대로의 나를 사랑해", "나만의 깊이를 만들어가"],
+    scores: [[2,0,0,0,0,0],[0,0,0,0,0,2],[0,0,2,0,0,0],[0,0,0,0,2,0]]
+  }
+];
+
+// 향 계열별 향수 데이터
+const perfumes = [
+  {
+    family: "플로럴 (꽃향)",
+    emoji: "🌸",
+    products: [
+      { name: "Dior — Miss Dior Eau de Parfum", desc: "장미향 위주의 로맨틱하고 우아한 향으로, 사랑스럽고 여성스러운 분위기를 만들어줘요." },
+      { name: "Chloé — Eau de Parfum", desc: "비누 향이 섞인 깔끔하고 클래식한 장미향으로, 세련되면서도 자연스러운 매력을 풍겨요." },
+      { name: "Diptyque — Do Son", desc: "튜베로즈 향으로 몽환적이고 매혹적인 느낌. 강렬하면서도 섬세한 꽃향기가 특징이에요." }
+    ],
+    notes: ["장미", "튜베로즈", "프리지아", "파우더리"],
+    tip: "손목 안쪽과 귀 뒤에 살짝 뿌리면 체온과 어우러져 더욱 로맨틱한 향이 나요."
+  },
+  {
+    family: "시트러스/프루티 (상큼한 과일향)",
+    emoji: "🍋",
+    products: [
+      { name: "Jo Malone — English Pear & Freesia", desc: "배의 달콤함과 프리지아의 깔끔함이 조화된 향으로, 밝고 생동감 넘치는 분위기를 만들어줘요." },
+      { name: "Atelier Cologne — Pomelo Paradis", desc: "자몽 향이 강한 상큼하고 청량한 향. 활기차고 자신감 넘치는 당신에게 꼭 맞아요." },
+      { name: "4711 — Original Eau de Cologne", desc: "상쾌한 시트러스의 정석. 깔끔하고 경쾌한 향으로 어디서든 호감을 사는 향수예요." }
+    ],
+    notes: ["베르가못", "자몽", "프리지아", "배"],
+    tip: "여름에 특히 잘 어울려요. 뿌리고 나서 2~3분 후 진짜 향이 피어오르니 기다려보세요."
+  },
+  {
+    family: "머스크/파우더리 (포근한 비누향)",
+    emoji: "🧼",
+    products: [
+      { name: "Diptyque — Fleur de Peau", desc: "살냄새와 어우러지는 파우더리한 머스크로 최근 매우 인기. 마치 갓 씻은 듯 포근한 향이에요." },
+      { name: "Kiehl's — Original Musk", desc: "남녀 공용으로 인기가 많은 클래식한 머스크 향. 누구에게나 자연스럽게 어울려요." },
+      { name: "Byredo — Blanche", desc: "깨끗하게 세탁된 세제 향 느낌의 파우더리 향. 깔끔하고 단정한 이미지를 만들어줘요." }
+    ],
+    notes: ["화이트 머스크", "파우더", "세이프티우드", "바닐라"],
+    tip: "체온이 높은 곳(목, 손목)에 뿌리면 은은하게 오래 지속돼요."
+  },
+  {
+    family: "우디/그린 (나무·자연향)",
+    emoji: "🌿",
+    products: [
+      { name: "Aesop — Tacit", desc: "숲속에 있는 듯한 시트러스 우디 향. 지적이고 차분한 분위기를 연출해줘요." },
+      { name: "Diptyque — Philosykos", desc: "무화과 나무의 달콤하면서도 쌉싸름한 우디 향. 독특하고 감각적인 개성을 표현해요." },
+      { name: "Nonfiction — Santal Cream", desc: "샌달우드의 크리미하고 차분한 향. 따뜻하면서도 세련된 나무 향기가 매력적이에요." }
+    ],
+    notes: ["샌달우드", "무화과", "베티버", "삼나무"],
+    tip: "옷에 살짝 뿌려두면 은은한 우디 향이 하루 종일 은은하게 유지돼요."
+  },
+  {
+    family: "스파이시/오리엔탈 (매혹적인 향)",
+    emoji: "✨",
+    products: [
+      { name: "Hermès — Terre d'Hermès", desc: "후추 향 등 스파이시함이 느껴지는 세련된 향수. 강한 존재감과 카리스마를 표현해줘요." },
+      { name: "Tom Ford — Black Orchid", desc: "강렬하고 화려한 향. 자신감 넘치고 독보적인 매력을 가진 분에게 잘 어울려요." },
+      { name: "Creed — Aventus", desc: "남성적인 스파이시 우디 향의 대표. 성공적이고 당당한 이미지를 만들어줘요." }
+    ],
+    notes: ["블랙페퍼", "오키드", "패출리", "앰버"],
+    tip: "저녁 외출이나 특별한 날에 뿌리면 강렬한 인상을 남길 수 있어요."
+  },
+  {
+    family: "아쿠아/아로마틱 (시원한 바다향)",
+    emoji: "🌊",
+    products: [
+      { name: "Jo Malone — Wood Sage & Sea Salt", desc: "은은하고 시원한 바닷바람 같은 향. 자유롭고 활기찬 에너지를 담고 있어요." },
+      { name: "Davidoff — Cool Water", desc: "시원한 향수의 대표작. 청량하고 깔끔해서 데일리로 부담 없이 사용하기 좋아요." }
+    ],
+    notes: ["씨솔트", "세이지", "아쿠아틱", "우드"],
+    tip: "아침 샤워 후 뿌리면 하루 종일 상쾌한 기분을 유지할 수 있어요."
+  }
+];
+
+function calcResult(answers) {
+  const total = [0,0,0,0,0,0];
+  answers.forEach((ans, qi) => {
+    const s = questions[qi].scores[ans];
+    s.forEach((v, i) => total[i] += v);
+  });
+  let max = 0, idx = 0;
+  total.forEach((v, i) => { if (v > max) { max = v; idx = i; } });
+  const p = perfumes[idx];
+  // 제품 중 랜덤 1개 선택 (다양성)
+  const pick = p.products[Math.floor(Math.random() * p.products.length)];
+  return { family: p.family, emoji: p.emoji, name: pick.name, desc: pick.desc, notes: p.notes, tip: p.tip, allProducts: p.products };
+}
+
+let state = { step: 'intro', current: 0, answers: [], result: null };
+const labels = ['A', 'B', 'C', 'D'];
+
+function render() {
+  const app = document.getElementById('app');
+  if (state.step === 'intro') {
+    app.innerHTML = `
+      <div class="intro">
+        <div class="intro-rose">🌹</div>
+        <div class="intro-eyebrow">Korea University · Adult Day 2026</div>
+        <div class="intro-title">나에게 어울리는<br>향은 무엇일까?</div>
+        <div class="intro-sub">성년의 날을 맞아, 5가지 질문으로<br>당신만의 향수를 찾아드려요.</div>
+        <button class="start-btn" onclick="startQuiz()">향기 찾기 시작</button>
+      </div>
+      <div class="footer">
+        <div class="footer-logo">고려대학교 문과대학</div>
+        <div class="footer-sub">성년의 날 이벤트 · 2026</div>
+      </div>
+    `;
+  } else if (state.step === 'quiz') {
+    const q = questions[state.current];
+    const pct = (state.current / questions.length) * 100;
+    const sel = state.answers[state.current];
+    app.innerHTML = `
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span class="progress-step">질문 ${state.current + 1}</span>
+          <span class="progress-count">${state.current + 1} / ${questions.length}</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="question-text">${q.q}</div>
+      <div class="options">
+        ${q.options.map((o, i) => `
+          <button class="option-btn ${sel === i ? 'selected' : ''}" onclick="select(${i})">
+            <span class="option-num">${labels[i]}</span>
+            <span>${o}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="nav-row">
+        ${state.current > 0 ? `<button class="btn-back" onclick="goBack()">← 이전</button>` : ''}
+        <button class="btn-next" ${sel === undefined ? 'disabled' : ''} onclick="goNext()">
+          ${state.current === questions.length - 1 ? '결과 보기 ✨' : '다음 →'}
+        </button>
+      </div>
+    `;
+  } else if (state.step === 'result' && state.result) {
+    const r = state.result;
+    app.innerHTML = `
+      <div class="result-wrap">
+        <div class="accent-line"></div>
+        <div class="result-eyebrow">당신의 향</div>
+        <div class="result-name">${r.emoji} ${r.name}</div>
+        <span class="result-family">${r.family}</span>
+        <div class="result-card">
+          <div class="result-desc">${r.desc}</div>
+          <div class="notes-label">향 키워드</div>
+          <div class="notes-row">${r.notes.map(n => `<span class="note-tag">${n}</span>`).join('')}</div>
+          <div class="result-tip">💡 ${r.tip}</div>
+        </div>
+        <div style="margin:1rem 0 0.5rem;font-size:12px;color:var(--text-muted);letter-spacing:0.05em;">같은 계열 향수도 살펴보세요</div>
+        ${r.allProducts.filter(p=>p.name!==r.name).map(p=>`
+          <div style="background:white;border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;">
+            <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px;">${p.name}</div>
+            <div style="font-size:12px;color:var(--text-muted);line-height:1.6;">${p.desc}</div>
+          </div>
+        `).join('')}
+        <button class="share-btn" style="margin-top:1.25rem;" onclick="openModal()">📸 인스타에 공유하기</button>
+        <button class="restart-btn" onclick="restart()">다시 해보기</button>
+        <div class="footer">
+          <div class="footer-logo">고려대학교 문과대학</div>
+          <div class="footer-sub">#고려대성년의날 #나의향찾기</div>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function startQuiz() { state = { step: 'quiz', current: 0, answers: [], result: null }; render(); }
+function select(i) { state.answers[state.current] = i; render(); }
+function goBack() { state.current--; render(); }
+function restart() { state.step = 'intro'; render(); }
+function openModal() { document.getElementById('modal').style.display = 'flex'; }
+function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+function goNext() {
+  if (state.current < questions.length - 1) { state.current++; render(); return; }
+  state.result = calcResult(state.answers);
+  state.step = 'result';
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
